@@ -2,10 +2,11 @@ import "./App.css";
 import React from "react";
 import { useEffect } from "react";
 import { useLocalState } from "./utils/useLocalState";
-import { BrowserRouter as Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Dashboard from "./components/dashboard/Dashboard";
+import HomePage from "./components/home/HomePage";
 
 function App() {
-  // Use custom useState hook to store jwt in local storage
   const [jwt, setJwt] = useLocalState("", "jwt");
 
   useEffect(() => {
@@ -32,21 +33,9 @@ function App() {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        component={() => {
-          return <div>Home Component</div>;
-        }}
-      />
-      <Route path="/" component={dashboard} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/" element={<HomePage />} />
     </Routes>
-
-    //   <div className="App">
-    //   <header className="App-header">
-    //     <h1>Hello</h1>
-    //     <p>JWT is: {jwt}</p>
-    //   </header>
-    // </div>
   );
 }
 
