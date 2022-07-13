@@ -15,8 +15,8 @@ function App() {
   //   // If there is no jwt set, then go fetch one
   //   if (!jwt) {
   //     const requestBody = {
-  //       username: "jon",
-  //       password: "asdfasdf",
+  //       username: "dean",
+  //       password: "password",
   //     };
 
   //     fetch("http://localhost:8081/auth", {
@@ -29,6 +29,9 @@ function App() {
   //       .then((response) => response.json())
   //       .then((data) => {
   //         setJwt(data.jwtToken);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
   //       });
   //   }
   // }, []);
