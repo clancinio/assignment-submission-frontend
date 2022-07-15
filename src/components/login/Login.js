@@ -5,6 +5,8 @@ function Login() {
   const [jwt, setJwt] = useLocalState("", "jwt");
 
   const getToken = () => {
+    window.localStorage.removeItem("jwt");
+
     if (!jwt) {
       const requestBody = {
         username: "dean",
@@ -54,7 +56,7 @@ function Login() {
         class="btn btn-primary btn-block mb-4"
       >
         {" "}
-        Get jwt
+        Get new jwt
       </button>
 
       <div class="text-center">
