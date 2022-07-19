@@ -1,8 +1,18 @@
 import React from "react";
+import { useState } from "react";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import { Link } from "react-router-dom";
 import { useLocalState } from "../../utils/useLocalState";
 
 function Login() {
   const [jwt, setJwt] = useLocalState("", "jwt");
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const getToken = () => {
     window.localStorage.removeItem("jwt");
@@ -31,40 +41,52 @@ function Login() {
   };
 
   return (
-    <form>
-      <div class="form-outline mb-4">
-        <input type="email" id="form2Example1" class="form-control" />
-        <label class="form-label" for="form2Example1">
-          Email address
-        </label>
-      </div>
+    <Container>
+      <Form className="form-style">
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="joe@gmail.com"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Form.Group>
 
-      <div class="form-outline mb-4">
-        <input type="password" id="form2Example2" class="form-control" />
-        <label class="form-label" for="form2Example2">
-          Password
-        </label>
-      </div>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Group>
 
-      <button type="button" class="btn btn-primary btn-block mb-4">
-        Sign in
-      </button>
+        <Row>
+          <Col className="d-flex flex-column gap-2">
+            <Button variant="primary" type="submit" className="mr-3">
+              Sign in
+            </Button>
 
-      <button
-        onClick={() => getToken()}
-        type="button"
-        class="btn btn-primary btn-block mb-4"
-      >
-        {" "}
-        Get new jwt
-      </button>
+            <Button
+              onClick={() => getToken()}
+              type="button"
+              variant="secondary"
+            >
+              {" "}
+              Get new jwt
+            </Button>
+          </Col>
+        </Row>
 
-      <div class="text-center">
-        <p>
-          Not a member? <a href="#!">Register</a>
-        </p>
-      </div>
-    </form>
+        <div class="text-center mt-3">
+          <p>
+            Not a member? <Link to={"/register"}>Register</Link>
+          </p>
+        </div>
+      </Form>
+    </Container>
   );
 }
 
