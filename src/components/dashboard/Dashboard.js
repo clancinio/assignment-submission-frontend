@@ -1,50 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useLocalState } from "../../utils/useLocalState";
 import { Link } from "react-router-dom";
+import httpRequest from "../../services/httpRequestService";
 
 function Dashboard() {
   // Use custom useState hook to store jwt in local storage
   const [jwt, setJwt] = useLocalState("", "jwt");
 
   // store assignments
-  const [assignments, setAssignments] = useState();
+  const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/assignments", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((assignments) => {
-        console.log(assignments);
+    httpRequest("http://localhost:8081/api/assignments", "GET", jwt).then(
+      (assignments) => {
         setAssignments(assignments);
-      });
+      }
+    );
   }, []);
 
   const createAssignment = () => {
-    fetch("http://localhost:8081/api/assignments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((assignment) => {
+    httpRequest("http://localhost:8081/api/assignments", "POST", jwt).then(
+      (assignment) => {
         console.log(assignment);
         window.location.href = `/assignments/${assignment.id}`;
-      });
+      }
+    );
   };
 
   return (
@@ -52,7 +32,7 @@ function Dashboard() {
       {assignments ? (
         assignments.map((assignment) => {
           return (
-            <div>
+            <div key={assignment.id}>
               <Link to={`/assignments/${assignment.id}`}>
                 Assignment: {assignment.id}
               </Link>

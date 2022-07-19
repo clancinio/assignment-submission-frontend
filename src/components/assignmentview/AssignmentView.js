@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import httpRequest from "../../services/httpRequestService";
 import { useLocalState } from "../../utils/useLocalState";
 
 function AssignmentView() {
@@ -14,22 +15,19 @@ function AssignmentView() {
   const { assignmentId } = useParams();
 
   useEffect(() => {
-    fetch(`http://localhost:8081/api/assignments/${assignmentId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt,
-      },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((assignment) => {
-        console.log(assignment);
-        setAssignment(assignment);
-      });
+    httpRequest(
+      `http://localhost:8081/api/assignments/${assignmentId}`,
+      "GET",
+      jwt
+    ).then((assignment) => {
+      if (assignment.branch === null) {
+        assignment.branch = "";
+      }
+      if (assignment.gitHubUrl === null) {
+        assignment.gitHubUrl = "";
+      }
+      setAssignment(assignment);
+    });
   }, []);
 
   const updateAssignment = (prop, value) => {
@@ -40,26 +38,14 @@ function AssignmentView() {
   };
 
   const save = () => {
-    fetch(`http://localhost:8081/api/assignments/${assignmentId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + jwt,
-      },
-      body: JSON.stringify(assignment),
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((assignment) => {
-        console.log(assignment);
-        setAssignment(assignment);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    httpRequest(
+      `http://localhost:8081/api/assignments/${assignmentId}`,
+      "PUT",
+      jwt,
+      assignment
+    ).then((assignmentData) => {
+      setAssignment(assignmentData);
+    });
   };
 
   return (
