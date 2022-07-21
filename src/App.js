@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocalState } from "./utils/useLocalState";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import HomePage from "./components/home/HomePage";
@@ -8,8 +7,6 @@ import PrivateRoute from "./components/privateroute/PrivateRoute";
 import AssignmentView from "./components/assignmentview/AssignmentView";
 
 function App() {
-  const [jwt, setJwt] = useLocalState("", "jwt");
-
   return (
     <Routes>
       <Route

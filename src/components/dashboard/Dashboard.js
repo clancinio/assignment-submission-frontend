@@ -5,7 +5,7 @@ import httpRequest from "../../services/httpRequestService";
 
 function Dashboard() {
   // Use custom useState hook to store jwt in local storage
-  const [jwt, setJwt] = useLocalState("", "jwt");
+  const [jwt] = useLocalState("", "jwt");
 
   // store assignments
   const [assignments, setAssignments] = useState([]);
