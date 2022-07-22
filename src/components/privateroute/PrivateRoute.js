@@ -6,7 +6,7 @@ import { useLocalState } from "../../utils/useLocalState";
 function PrivateRoute({ children }) {
   const [jwt] = useLocalState("", "jwt");
   const [isLoading, setIsLoading] = useState(true);
-  const [isValid, setIsValid] = useState(false);
+  const [isValid, setIsValid] = useState();
 
   if (jwt) {
     httpRequest(
