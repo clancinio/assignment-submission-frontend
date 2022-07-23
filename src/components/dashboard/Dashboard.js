@@ -6,6 +6,7 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
+import Badge from "react-bootstrap/Badge";
 import httpRequest from "../../services/httpRequestService";
 
 function Dashboard() {
@@ -39,17 +40,20 @@ function Dashboard() {
       <Button className="mt-5" size="large" onClick={() => createAssignment()}>
         Create New Assignment
       </Button>
-      {assignments ? (
+      {assignments.length > 0 ? (
         <Row className="d-flex flex-row gap-5 justify-content-center my-5">
           {assignments.map((assignment) => {
             return (
               <Col lg={4} xl={3} key={assignment.id}>
                 <Card style={{ height: "18rem" }} className="shadow rounded">
                   <Card.Body className="d-flex flex-column">
-                    <Card.Title>Assignment {assignment.id}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">
-                      {assignment.status}
-                    </Card.Subtitle>
+                    <Card.Title>Assignment {assignment.number}</Card.Title>
+                    <div className="d-flex align-items-start">
+                      <Badge pill className="mb-2" style={{ fontSize: "1em" }}>
+                        {assignment.status}
+                      </Badge>
+                    </div>
+
                     <Card.Text>
                       <p>GitHubURL: {assignment.gitHubUrl}</p>
                       <p>Branch: {assignment.branch}</p>
@@ -70,9 +74,11 @@ function Dashboard() {
           })}
         </Row>
       ) : (
-        <div>
-          <h3>No assignemnts available</h3>
-        </div>
+        <Row>
+          <Col className="my-3">
+            <h3>You haven't created any assignments.</h3>
+          </Col>
+        </Row>
       )}
     </Container>
   );

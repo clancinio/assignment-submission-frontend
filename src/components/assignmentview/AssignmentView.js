@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -27,8 +28,10 @@ function AssignmentView() {
   const [assignmentStatusEnums, setAssignmentStatusEnums] = useState([]);
   // Get ASsignment id from url param
   const { assignmentId } = useParams();
-
+  // Use Ref
   const currentAssignmentState = useRef(assignment);
+  // useNavigate
+  const navigate = useNavigate();
 
   function updateAssignment(prop, value) {
     const newAssignment = { ...assignment };
@@ -90,90 +93,105 @@ function AssignmentView() {
 
   return (
     <Container className="mt-5">
-      <Row className="d-flex align-items-center mb-5">
-        <Col>
-          {assignment ? (
-            <h1 className="m-0">Assignment {assignment.number}</h1>
-          ) : (
-            <></>
-          )}
-        </Col>
-        <Col className="d-flex justify-content-center">
-          <Badge bg="secondary" style={{ fontSize: "1em" }}>
-            {assignment.status}
-          </Badge>
-        </Col>
-      </Row>
-
       {assignment ? (
         <>
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="2">
-              Assignment Number:
-            </Form.Label>
-            <Col sm="10" className="d-flex align-items-center">
-              <DropdownButton
-                id="dropdown-basic-button"
-                varient="secondary"
-                title={
-                  assignment.number
-                    ? `Assignment ${assignment.number}`
-                    : `Select an Assignment`
-                }
-                onSelect={(selectedElement) => {
-                  console.log(selectedElement);
-                  updateAssignment("number", selectedElement);
+          <Row className="d-flex align-items-center mb-5">
+            <Col>
+              <h1 className="m-0">Assignment {assignment.number}</h1>
+            </Col>
+            <Col className="d-flex justify-content-center mb-2">
+              <Badge style={{ fontSize: "1em" }}>{assignment.status}</Badge>
+            </Col>
+          </Row>
+
+          <>
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="2">
+                Assignment Number:
+              </Form.Label>
+              <Col sm="10" className="d-flex align-items-center">
+                <DropdownButton
+                  id="dropdown-basic-button"
+                  varient="secondary"
+                  title={
+                    assignment.number
+                      ? `Assignment ${assignment.number}`
+                      : `Select an Assignment`
+                  }
+                  onSelect={(selectedElement) => {
+                    console.log(selectedElement);
+                    updateAssignment("number", selectedElement);
+                  }}
+                >
+                  {assignmentEnums.map((assignmentEnum, index) => {
+                    return (
+                      <Dropdown.Item
+                        key={index}
+                        eventKey={assignmentEnum.assignmentNum}
+                      >
+                        {assignmentEnum.assignmentNum}
+                      </Dropdown.Item>
+                    );
+                  })}
+                </DropdownButton>
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="2">
+                GitHub URL:
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="url"
+                  value={assignment.gitHubUrl}
+                  placeholder="www.github.com/your-url"
+                  onChange={(e) => {
+                    updateAssignment("gitHubUrl", e.target.value);
+                  }}
+                />
+              </Col>
+            </Form.Group>
+
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="2">
+                Branch:
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  placeholder="main"
+                  value={assignment.branch}
+                  onChange={(e) => {
+                    updateAssignment("branch", e.target.value);
+                  }}
+                />
+              </Col>
+            </Form.Group>
+
+            <div className="d-flex gap-2">
+              <Button
+                size="large"
+                onClick={() => {
+                  save();
                 }}
               >
-                {assignmentEnums.map((assignmentEnum) => {
-                  return (
-                    <Dropdown.Item eventKey={assignmentEnum.assignmentNum}>
-                      {assignmentEnum.assignmentNum}
-                    </Dropdown.Item>
-                  );
-                })}
-              </DropdownButton>
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="2">
-              GitHub URL:
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control
-                type="url"
-                value={assignment.gitHubUrl}
-                placeholder="www.github.com/your-url"
-                onChange={(e) => {
-                  updateAssignment("gitHubUrl", e.target.value);
+                Submit
+              </Button>
+              <Button
+                size="large"
+                variant="secondary"
+                onClick={() => {
+                  navigate(`/dashboard`);
                 }}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} className="mb-3">
-            <Form.Label column sm="2">
-              Branch:
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control
-                type="text"
-                placeholder="main"
-                value={assignment.branch}
-                onChange={(e) => {
-                  updateAssignment("branch", e.target.value);
-                }}
-              />
-            </Col>
-          </Form.Group>
-
-          <Button size="large" onClick={() => save()}>
-            Submit Assignment
-          </Button>
+              >
+                Back
+              </Button>
+            </div>
+          </>
         </>
       ) : (
-        <></>
+        <div>Loading</div>
       )}
     </Container>
   );
