@@ -31,13 +31,17 @@ function Login() {
       },
       body: JSON.stringify(reqBody),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setJwt(data.jwtToken);
+      .then((response) => {
+        if (response.status === 200)
+          return Promise.all([response.json(), response.headers]);
+        else return Promise.reject("Invalid login attempt");
       })
-      .catch((error) => {
-        console.log(error);
+      .then(([body, headers]) => {
+        setJwt(body.jwtToken);
+        window.location.href = "dashboard";
+      })
+      .catch((message) => {
+        alert(message);
       });
   };
 

@@ -7,10 +7,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
-import httpRequest from "../../services/httpRequestService";
 import NavBar from "../navbar/NavBar";
 
-function Dashboard() {
+function CodeReviewerDashboard() {
   const navigate = useNavigate();
 
   // Use custom useState hook to store jwt in local storage
@@ -19,34 +18,15 @@ function Dashboard() {
   // store assignments
   const [assignments, setAssignments] = useState([]);
 
-  useEffect(() => {
-    httpRequest("http://localhost:8081/api/assignments", "GET", jwt).then(
-      (assignments) => {
-        setAssignments(assignments);
-      }
-    );
-  }, []);
-
-  const createAssignment = () => {
-    httpRequest("http://localhost:8081/api/assignments", "POST", jwt).then(
-      (assignment) => {
-        console.log(assignment);
-        window.location.href = `/assignments/${assignment.id}`;
-      }
-    );
-  };
-
   return (
     <>
       <NavBar />
       <Container>
-        <Button
-          className="mt-5"
-          size="large"
-          onClick={() => createAssignment()}
-        >
-          Create New Assignment
-        </Button>
+        <Row>
+          <Col>
+            <h1 className="my-3">Code Reviewer Dashboard</h1>
+          </Col>
+        </Row>
         {assignments.length > 0 ? (
           <Row className="d-flex flex-row gap-5 justify-content-center my-5">
             {assignments.map((assignment) => {
@@ -87,7 +67,7 @@ function Dashboard() {
         ) : (
           <Row>
             <Col className="my-3">
-              <h3>You haven't created any assignments.</h3>
+              <h3>There are no assignments available for review</h3>
             </Col>
           </Row>
         )}
@@ -96,4 +76,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default CodeReviewerDashboard;
