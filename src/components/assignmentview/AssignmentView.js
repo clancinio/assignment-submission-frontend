@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -28,6 +28,41 @@ function AssignmentView() {
   // Get ASsignment id from url param
   const { assignmentId } = useParams();
 
+  const currentAssignmentState = useRef(assignment);
+
+  function updateAssignment(prop, value) {
+    const newAssignment = { ...assignment };
+    newAssignment[prop] = value;
+    setAssignment(newAssignment);
+    console.log(assignment);
+  }
+
+  const save = () => {
+    if (assignment.status === assignmentStatusEnums[0].status) {
+      updateAssignment("status", assignmentStatusEnums[1].status);
+    } else {
+      persist();
+    }
+  };
+
+  const persist = () => {
+    httpRequest(
+      `http://localhost:8081/api/assignments/${assignmentId}`,
+      "PUT",
+      jwt,
+      assignment
+    ).then((assignmentData) => {
+      setAssignment(assignmentData);
+    });
+  };
+
+  useEffect(() => {
+    if (currentAssignmentState.current.status !== assignment.status) {
+      persist();
+    }
+    currentAssignmentState.current = assignment;
+  }, [assignment]);
+
   useEffect(() => {
     httpRequest(
       `http://localhost:8081/api/assignments/${assignmentId}`,
@@ -52,30 +87,6 @@ function AssignmentView() {
       setAssignmentStatusEnums(assignmentStatusEnumList);
     });
   }, []);
-
-  async function updateAssignment(prop, value) {
-    const newAssignment = { ...assignment };
-    newAssignment[prop] = value;
-    await setAssignment(newAssignment);
-    console.log(assignment);
-  }
-
-  const save = () => {
-    console.log(assignmentStatusEnums);
-    console.log(assignmentStatusEnums[0].status);
-    if (assignment.status === assignmentStatusEnums[0].status) {
-      updateAssignment("status", assignmentStatusEnums[1].status);
-    }
-
-    httpRequest(
-      `http://localhost:8081/api/assignments/${assignmentId}`,
-      "PUT",
-      jwt,
-      assignment
-    ).then((assignmentData) => {
-      setAssignment(assignmentData);
-    });
-  };
 
   return (
     <Container className="mt-5">
