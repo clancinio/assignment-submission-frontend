@@ -18,9 +18,13 @@ function AssignmentView() {
   const [assignment, setAssignment] = useState({
     gitHubUrl: "",
     branch: "",
+    number: null,
+    status: "",
   });
-  // Assignment Enums
+  // Assignment  Enums
   const [assignmentEnums, setAssignmentEnums] = useState([]);
+  // Assignment Status Enums
+  const [assignmentStatusEnums, setAssignmentStatusEnums] = useState([]);
   // Get ASsignment id from url param
   const { assignmentId } = useParams();
 
@@ -30,9 +34,12 @@ function AssignmentView() {
       "GET",
       jwt
     ).then((assignmentResponse) => {
+      console.log("RES:");
       console.log(assignmentResponse);
       let assignment = assignmentResponse.assignment;
       let assignmentEnumList = assignmentResponse.assignmentEnumList;
+      let assignmentStatusEnumList =
+        assignmentResponse.assignmentStatusEnumList;
 
       if (assignment.branch === null) {
         assignment.branch = "";
@@ -42,17 +49,24 @@ function AssignmentView() {
       }
       setAssignment(assignment);
       setAssignmentEnums(assignmentEnumList);
+      setAssignmentStatusEnums(assignmentStatusEnumList);
     });
   }, []);
 
-  const updateAssignment = (prop, value) => {
+  async function updateAssignment(prop, value) {
     const newAssignment = { ...assignment };
     newAssignment[prop] = value;
-    setAssignment(newAssignment);
+    await setAssignment(newAssignment);
     console.log(assignment);
-  };
+  }
 
   const save = () => {
+    console.log(assignmentStatusEnums);
+    console.log(assignmentStatusEnums[0].status);
+    if (assignment.status === assignmentStatusEnums[0].status) {
+      updateAssignment("status", assignmentStatusEnums[1].status);
+    }
+
     httpRequest(
       `http://localhost:8081/api/assignments/${assignmentId}`,
       "PUT",
@@ -67,7 +81,11 @@ function AssignmentView() {
     <Container className="mt-5">
       <Row className="d-flex align-items-center mb-5">
         <Col>
-          <h1 className="m-0">Assignment {assignment.id}</h1>
+          {assignment ? (
+            <h1 className="m-0">Assignment {assignment.number}</h1>
+          ) : (
+            <></>
+          )}
         </Col>
         <Col className="d-flex justify-content-center">
           <Badge bg="secondary" style={{ fontSize: "1em" }}>
@@ -85,11 +103,20 @@ function AssignmentView() {
             <Col sm="10" className="d-flex align-items-center">
               <DropdownButton
                 id="dropdown-basic-button"
-                title="Dropdown button"
+                varient="secondary"
+                title={
+                  assignment.number
+                    ? `Assignment ${assignment.number}`
+                    : `Select an Assignment`
+                }
+                onSelect={(selectedElement) => {
+                  console.log(selectedElement);
+                  updateAssignment("number", selectedElement);
+                }}
               >
                 {assignmentEnums.map((assignmentEnum) => {
                   return (
-                    <Dropdown.Item>
+                    <Dropdown.Item eventKey={assignmentEnum.assignmentNum}>
                       {assignmentEnum.assignmentNum}
                     </Dropdown.Item>
                   );
