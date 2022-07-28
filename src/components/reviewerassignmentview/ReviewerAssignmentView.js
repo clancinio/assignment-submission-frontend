@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import httpRequest from "../../services/httpRequestService";
 import { useLocalState } from "../../utils/useLocalState";
 
-function AssignmentView() {
+function ReviewerAssignmentView() {
   // Use custom useState hook to store jwt in local storage
   const [jwt] = useLocalState("", "jwt");
   // store assignments
@@ -23,6 +23,7 @@ function AssignmentView() {
     status: "",
     codeReviewVideoUrl: "",
   });
+
   // Assignment  Enums
   const [assignmentEnums, setAssignmentEnums] = useState([]);
   // Assignment Status Enums
@@ -41,9 +42,9 @@ function AssignmentView() {
     console.log(assignment);
   }
 
-  const save = () => {
-    if (assignment.status === assignmentStatusEnums[0].status) {
-      updateAssignment("status", assignmentStatusEnums[1].status);
+  const saveReview = (status) => {
+    if (status && assignment.status != status) {
+      updateAssignment("status", status);
     } else {
       persist();
     }
@@ -108,42 +109,12 @@ function AssignmentView() {
           <>
             <Form.Group as={Row} className="mb-3">
               <Form.Label column sm="2">
-                Assignment Number:
-              </Form.Label>
-              <Col sm="10" className="d-flex align-items-center">
-                <DropdownButton
-                  id="dropdown-basic-button"
-                  varient="secondary"
-                  title={
-                    assignment.number
-                      ? `Assignment ${assignment.number}`
-                      : `Select an Assignment`
-                  }
-                  onSelect={(selectedElement) => {
-                    console.log(selectedElement);
-                    updateAssignment("number", selectedElement);
-                  }}
-                >
-                  {assignmentEnums.map((assignmentEnum, index) => {
-                    return (
-                      <Dropdown.Item
-                        key={index}
-                        eventKey={assignmentEnum.assignmentNum}
-                      >
-                        {assignmentEnum.assignmentNum}
-                      </Dropdown.Item>
-                    );
-                  })}
-                </DropdownButton>
-              </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} className="mb-3">
-              <Form.Label column sm="2">
                 GitHub URL:
               </Form.Label>
               <Col sm="10">
                 <Form.Control
+                  readOnly
+                  disabled
                   type="url"
                   value={assignment.gitHubUrl}
                   placeholder="www.github.com/your-url"
@@ -160,6 +131,8 @@ function AssignmentView() {
               </Form.Label>
               <Col sm="10">
                 <Form.Control
+                  readOnly
+                  disabled
                   type="text"
                   placeholder="main"
                   value={assignment.branch}
@@ -170,53 +143,75 @@ function AssignmentView() {
               </Col>
             </Form.Group>
 
-            {assignment.status === "Completed" ? (
-              <>
-                <Form.Group as={Row} className="mb-3">
-                  <Form.Label column sm="2">
-                    Review URL:
-                  </Form.Label>
-                  <Col sm="10">
-                    <Form.Control
-                      readOnly
-                      disabled
-                      type="text"
-                      placeholder="main"
-                      value={assignment.codeReviewVideoUrl}
-                    />
-                  </Col>
-                </Form.Group>
-                <Button
-                  size="large"
-                  variant="secondary"
-                  onClick={() => {
-                    navigate(`/dashboard`);
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm="2">
+                Video Review URL:
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  placeholder="codeReviewVideoUrl"
+                  value={assignment.codeReviewVideoUrl}
+                  onChange={(e) => {
+                    updateAssignment("codeReviewVideoUrl", e.target.value);
                   }}
-                >
-                  Back
-                </Button>
-              </>
-            ) : (
-              <div className="d-flex gap-2">
+                />
+              </Col>
+            </Form.Group>
+
+            <div className="d-flex gap-2">
+              {assignment.status === "Completed" ? (
                 <Button
+                  variant={"secondary"}
                   size="large"
                   onClick={() => {
-                    save();
+                    saveReview(assignmentStatusEnums[2].status);
                   }}
                 >
-                  Submit
+                  Re-Claim
                 </Button>
+              ) : (
                 <Button
                   size="large"
-                  variant="secondary"
                   onClick={() => {
-                    navigate(`/dashboard`);
+                    saveReview(assignmentStatusEnums[4].status);
                   }}
                 >
-                  Back
+                  Add Review
                 </Button>
-              </div>
-            )}
+              )}
+              {assignment.status === "Needs Update" ? (
+                <Button
+                  variant={"secondary"}
+                  size="large"
+                  onClick={() => {
+                    saveReview(assignmentStatusEnums[2].status);
+                  }}
+                >
+                  Re-Claim
+                </Button>
+              ) : (
+                <Button
+                  variant={"danger"}
+                  size="large"
+                  onClick={() => {
+                    saveReview(assignmentStatusEnums[3].status);
+                  }}
+                >
+                  Needs Update
+                </Button>
+              )}
+
+              <Button
+                size="large"
+                variant="secondary"
+                onClick={() => {
+                  navigate(`/dashboard`);
+                }}
+              >
+                Back
+              </Button>
+            </div>
           </>
         </>
       ) : (
@@ -226,4 +221,4 @@ function AssignmentView() {
   );
 }
 
-export default AssignmentView;
+export default ReviewerAssignmentView;

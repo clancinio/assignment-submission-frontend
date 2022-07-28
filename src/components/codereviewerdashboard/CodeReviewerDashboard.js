@@ -17,9 +17,7 @@ function CodeReviewerDashboard() {
   const [jwt] = useLocalState("", "jwt");
 
   // store assignments
-  const [assignmentsInReview, setAssignmentsInReview] = useState([]);
   const [assignments, setAssignments] = useState([]);
-  const [assignmentsNeedUpdate, setAssignmentsNeedUpdate] = useState([]);
 
   function claimAssignment(assignment) {
     const requestBody = { ...assignment };
@@ -36,6 +34,10 @@ function CodeReviewerDashboard() {
       assignmentsCopy[i] = updatedAssignment;
       setAssignments(assignmentsCopy);
     });
+  }
+
+  function review(assignment) {
+    navigate(`/assignments/${assignment.id}`);
   }
 
   useEffect(() => {
@@ -57,43 +59,49 @@ function CodeReviewerDashboard() {
         </Row>
         <div className="assignment--section in-review">
           <h3>Assignments in Review</h3>
-          {assignmentsInReview.length > 0 ? (
+          {assignments.length > 0 ? (
             <Row className="d-flex flex-row gap-5 justify-content-center my-5">
-              {assignmentsInReview.map((assignment) => {
-                return (
-                  <Col lg={4} xl={3} key={assignment.id}>
-                    <Card
-                      style={{ height: "18rem" }}
-                      className="shadow rounded"
-                    >
-                      <Card.Body className="d-flex flex-column">
-                        <Card.Title>Assignment {assignment.number}</Card.Title>
-                        <div className="d-flex align-items-start">
-                          <Badge
-                            pill
-                            className="mb-2"
-                            style={{ fontSize: "1em" }}
-                          >
-                            {assignment.status}
-                          </Badge>
-                        </div>
+              {assignments
+                .filter((a) => a.status === "In Review")
+                .map((assignment) => {
+                  return (
+                    <Col lg={4} xl={3} key={assignment.id}>
+                      <Card
+                        style={{ height: "18rem" }}
+                        className="shadow rounded"
+                      >
+                        <Card.Body className="d-flex flex-column">
+                          <Card.Title>
+                            Assignment {assignment.number}
+                          </Card.Title>
+                          <div className="d-flex align-items-start">
+                            <Badge
+                              pill
+                              className="mb-2"
+                              style={{ fontSize: "1em" }}
+                            >
+                              {assignment.status}
+                            </Badge>
+                          </div>
 
-                        <Card.Text>
-                          <p>GitHubURL: {assignment.gitHubUrl}</p>
-                          <p>Branch: {assignment.branch}</p>
-                        </Card.Text>
-                        <Button
-                          variant="secondary"
-                          className="mt-auto p-2"
-                          onClick={() => {}}
-                        >
-                          Claim
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                );
-              })}
+                          <Card.Text>
+                            <p>GitHubURL: {assignment.gitHubUrl}</p>
+                            <p>Branch: {assignment.branch}</p>
+                          </Card.Text>
+                          <Button
+                            variant="secondary"
+                            className="mt-auto p-2"
+                            onClick={() => {
+                              review(assignment);
+                            }}
+                          >
+                            Review
+                          </Button>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
             </Row>
           ) : (
             <Row>
@@ -109,43 +117,47 @@ function CodeReviewerDashboard() {
           <h3>Submitted Assignments</h3>
           {assignments.length > 0 ? (
             <Row className="d-flex flex-row gap-5 justify-content-center my-5">
-              {assignments.map((assignment) => {
-                return (
-                  <Col lg={4} xl={3} key={assignment.id}>
-                    <Card
-                      style={{ height: "18rem" }}
-                      className="shadow rounded"
-                    >
-                      <Card.Body className="d-flex flex-column">
-                        <Card.Title>Assignment {assignment.number}</Card.Title>
-                        <div className="d-flex align-items-start">
-                          <Badge
-                            pill
-                            className="mb-2"
-                            style={{ fontSize: "1em" }}
-                          >
-                            {assignment.status}
-                          </Badge>
-                        </div>
+              {assignments
+                .filter((a) => a.status === "Submitted")
+                .map((assignment) => {
+                  return (
+                    <Col lg={4} xl={3} key={assignment.id}>
+                      <Card
+                        style={{ height: "18rem" }}
+                        className="shadow rounded"
+                      >
+                        <Card.Body className="d-flex flex-column">
+                          <Card.Title>
+                            Assignment {assignment.number}
+                          </Card.Title>
+                          <div className="d-flex align-items-start">
+                            <Badge
+                              pill
+                              className="mb-2"
+                              style={{ fontSize: "1em" }}
+                            >
+                              {assignment.status}
+                            </Badge>
+                          </div>
 
-                        <Card.Text>
-                          <p>GitHubURL: {assignment.gitHubUrl}</p>
-                          <p>Branch: {assignment.branch}</p>
-                        </Card.Text>
-                        <Button
-                          variant="secondary"
-                          className="mt-auto p-2"
-                          onClick={() => {
-                            claimAssignment(assignment);
-                          }}
-                        >
-                          Claim
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                );
-              })}
+                          <Card.Text>
+                            <p>GitHubURL: {assignment.gitHubUrl}</p>
+                            <p>Branch: {assignment.branch}</p>
+                          </Card.Text>
+                          <Button
+                            variant="secondary"
+                            className="mt-auto p-2"
+                            onClick={() => {
+                              claimAssignment(assignment);
+                            }}
+                          >
+                            Claim
+                          </Button>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
             </Row>
           ) : (
             <Row>
@@ -159,45 +171,49 @@ function CodeReviewerDashboard() {
         </div>
         <div className="assignment--section needs-update">
           <h3>Needs update</h3>
-          {assignmentsNeedUpdate.length > 0 ? (
+          {assignments.length > 0 ? (
             <Row className="d-flex flex-row gap-5 justify-content-center my-5">
-              {assignmentsNeedUpdate.map((assignment) => {
-                return (
-                  <Col lg={4} xl={3} key={assignment.id}>
-                    <Card
-                      style={{ height: "18rem" }}
-                      className="shadow rounded"
-                    >
-                      <Card.Body className="d-flex flex-column">
-                        <Card.Title>Assignment {assignment.number}</Card.Title>
-                        <div className="d-flex align-items-start">
-                          <Badge
-                            pill
-                            className="mb-2"
-                            style={{ fontSize: "1em" }}
-                          >
-                            {assignment.status}
-                          </Badge>
-                        </div>
+              {assignments
+                .filter((a) => a.status === "Needs Update")
+                .map((assignment) => {
+                  return (
+                    <Col lg={4} xl={3} key={assignment.id}>
+                      <Card
+                        style={{ height: "18rem" }}
+                        className="shadow rounded"
+                      >
+                        <Card.Body className="d-flex flex-column">
+                          <Card.Title>
+                            Assignment {assignment.number}
+                          </Card.Title>
+                          <div className="d-flex align-items-start">
+                            <Badge
+                              pill
+                              className="mb-2"
+                              style={{ fontSize: "1em" }}
+                            >
+                              {assignment.status}
+                            </Badge>
+                          </div>
 
-                        <Card.Text>
-                          <p>GitHubURL: {assignment.gitHubUrl}</p>
-                          <p>Branch: {assignment.branch}</p>
-                        </Card.Text>
-                        <Button
-                          variant="secondary"
-                          className="mt-auto p-2"
-                          onClick={() => {
-                            claimAssignment();
-                          }}
-                        >
-                          Claim
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                );
-              })}
+                          <Card.Text>
+                            <p>GitHubURL: {assignment.gitHubUrl}</p>
+                            <p>Branch: {assignment.branch}</p>
+                          </Card.Text>
+                          <Button
+                            variant="secondary"
+                            className="mt-auto p-2"
+                            onClick={() => {
+                              navigate(`/assignments/${assignment.id}`);
+                            }}
+                          >
+                            View
+                          </Button>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  );
+                })}
             </Row>
           ) : (
             <Row>

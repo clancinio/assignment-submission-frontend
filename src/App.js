@@ -8,6 +8,7 @@ import AssignmentView from "./components/assignmentview/AssignmentView";
 import { useLocalState } from "./utils/useLocalState";
 import jwt_decode from "jwt-decode";
 import CodeReviewerDashboard from "./components/codereviewerdashboard/CodeReviewerDashboard";
+import ReviewerAssignmentView from "./components/reviewerassignmentview/ReviewerAssignmentView";
 
 function App() {
   const [jwt] = useLocalState("", "jwt");
@@ -40,9 +41,15 @@ function App() {
       <Route
         path="/assignments/:assignmentId"
         element={
-          <PrivateRoute>
-            <AssignmentView />
-          </PrivateRoute>
+          roles.find((role) => role === "ROLE_CODE_REVIEWER") ? (
+            <PrivateRoute>
+              <ReviewerAssignmentView />
+            </PrivateRoute>
+          ) : (
+            <PrivateRoute>
+              <AssignmentView />
+            </PrivateRoute>
+          )
         }
       />
       <Route path="/login" element={<Login />} />

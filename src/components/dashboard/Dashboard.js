@@ -58,6 +58,11 @@ function Dashboard() {
                       <div className="d-flex align-items-start">
                         <Badge
                           pill
+                          bg={
+                            assignment.status === "Completed"
+                              ? "success"
+                              : "info"
+                          }
                           className="mb-2"
                           style={{ fontSize: "1em" }}
                         >
