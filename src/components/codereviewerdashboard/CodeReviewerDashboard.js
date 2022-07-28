@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
+import StatusBadge from "../statusbadge/StatusBadge";
 import NavBar from "../navbar/NavBar";
 import httpRequest from "../../services/httpRequestService";
 
@@ -75,13 +75,7 @@ function CodeReviewerDashboard() {
                             Assignment {assignment.number}
                           </Card.Title>
                           <div className="d-flex align-items-start">
-                            <Badge
-                              pill
-                              className="mb-2"
-                              style={{ fontSize: "1em" }}
-                            >
-                              {assignment.status}
-                            </Badge>
+                            <StatusBadge text={assignment.status} />
                           </div>
 
                           <Card.Text>
@@ -131,13 +125,7 @@ function CodeReviewerDashboard() {
                             Assignment {assignment.number}
                           </Card.Title>
                           <div className="d-flex align-items-start">
-                            <Badge
-                              pill
-                              className="mb-2"
-                              style={{ fontSize: "1em" }}
-                            >
-                              {assignment.status}
-                            </Badge>
+                            <StatusBadge text={assignment.status} />
                           </div>
 
                           <Card.Text>
@@ -187,13 +175,7 @@ function CodeReviewerDashboard() {
                             Assignment {assignment.number}
                           </Card.Title>
                           <div className="d-flex align-items-start">
-                            <Badge
-                              pill
-                              className="mb-2"
-                              style={{ fontSize: "1em" }}
-                            >
-                              {assignment.status}
-                            </Badge>
+                            <StatusBadge text={assignment.status} />
                           </div>
 
                           <Card.Text>

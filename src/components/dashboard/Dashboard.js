@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import Badge from "react-bootstrap/Badge";
+import StatusBadge from "../statusbadge/StatusBadge";
 import httpRequest from "../../services/httpRequestService";
 import NavBar from "../navbar/NavBar";
 
@@ -56,18 +56,7 @@ function Dashboard() {
                     <Card.Body className="d-flex flex-column">
                       <Card.Title>Assignment {assignment.number}</Card.Title>
                       <div className="d-flex align-items-start">
-                        <Badge
-                          pill
-                          bg={
-                            assignment.status === "Completed"
-                              ? "success"
-                              : "info"
-                          }
-                          className="mb-2"
-                          style={{ fontSize: "1em" }}
-                        >
-                          {assignment.status}
-                        </Badge>
+                        <StatusBadge text={assignment.status} />
                       </div>
 
                       <Card.Text>

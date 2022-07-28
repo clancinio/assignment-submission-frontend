@@ -5,12 +5,12 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import Badge from "react-bootstrap/Badge";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { useParams } from "react-router-dom";
 import httpRequest from "../../services/httpRequestService";
 import { useLocalState } from "../../utils/useLocalState";
+import StatusBadge from "../statusbadge/StatusBadge";
 
 function AssignmentView() {
   // Use custom useState hook to store jwt in local storage
@@ -101,7 +101,7 @@ function AssignmentView() {
               <h1 className="m-0">Assignment {assignment.number}</h1>
             </Col>
             <Col className="d-flex justify-content-center mb-2">
-              <Badge style={{ fontSize: "1em" }}>{assignment.status}</Badge>
+              <StatusBadge text={assignment.status} />
             </Col>
           </Row>
 
