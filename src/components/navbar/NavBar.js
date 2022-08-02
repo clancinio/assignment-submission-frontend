@@ -3,9 +3,10 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import { useNavigate } from "react-router";
 import { useLocalState } from "../../utils/useLocalState";
+import { useUser } from "../user-context/UserContext";
 
 function NavBar() {
-  const [jwt, setJwt] = useLocalState("", "jwt");
+  const user = useUser();
   const navigate = useNavigate();
 
   return (
@@ -17,8 +18,8 @@ function NavBar() {
           <Navbar.Text>
             <a
               onClick={() => {
-                localStorage.removeItem("jwt");
-                navigate("/login");
+                user.setJwt(null);
+                navigate("/");
               }}
             >
               Logout

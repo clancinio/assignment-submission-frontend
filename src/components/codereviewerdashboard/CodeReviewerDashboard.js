@@ -62,7 +62,12 @@ function CodeReviewerDashboard() {
           {assignments.length > 0 ? (
             <Row className="d-flex flex-row gap-5 justify-content-center my-5">
               {assignments
-                .filter((a) => a.status === "In Review")
+                .filter((a) => a.status === "In Review" || "Resubmitted")
+                .sort((a, b) => {
+                  if (a.status === "Resubmitted") return -2;
+                  if (a.status === "In Review") return -1;
+                  else return 1;
+                })
                 .map((assignment) => {
                   return (
                     <Col lg={4} xl={3} key={assignment.id}>

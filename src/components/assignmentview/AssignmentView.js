@@ -11,10 +11,10 @@ import { useParams } from "react-router-dom";
 import httpRequest from "../../services/httpRequestService";
 import { useLocalState } from "../../utils/useLocalState";
 import StatusBadge from "../statusbadge/StatusBadge";
+import { useUser } from "../user-context/UserContext";
 
 function AssignmentView() {
-  // Use custom useState hook to store jwt in local storage
-  const [jwt] = useLocalState("", "jwt");
+  const user = useUser();
   // store assignments
   const [assignment, setAssignment] = useState({
     gitHubUrl: "",
@@ -41,9 +41,9 @@ function AssignmentView() {
     console.log(assignment);
   }
 
-  const save = () => {
-    if (assignment.status === assignmentStatusEnums[0].status) {
-      updateAssignment("status", assignmentStatusEnums[1].status);
+  const save = (status) => {
+    if (status && assignment.status != status) {
+      updateAssignment("status", status);
     } else {
       persist();
     }
@@ -53,7 +53,7 @@ function AssignmentView() {
     httpRequest(
       `http://localhost:8081/api/assignments/${assignmentId}`,
       "PUT",
-      jwt,
+      user.jwt,
       assignment
     ).then((assignmentData) => {
       setAssignment(assignmentData);
@@ -71,7 +71,7 @@ function AssignmentView() {
     httpRequest(
       `http://localhost:8081/api/assignments/${assignmentId}`,
       "GET",
-      jwt
+      user.jwt
     ).then((assignmentResponse) => {
       console.log("RES:");
       console.log(assignmentResponse);
@@ -196,15 +196,35 @@ function AssignmentView() {
                   Back
                 </Button>
               </>
+            ) : assignment.status === "Pending Submission" ? (
+              <div className="d-flex gap-2">
+                <Button
+                  size="large"
+                  onClick={() => {
+                    save("Submitted");
+                  }}
+                >
+                  Submit
+                </Button>
+                <Button
+                  size="large"
+                  variant="secondary"
+                  onClick={() => {
+                    navigate(`/dashboard`);
+                  }}
+                >
+                  Back
+                </Button>
+              </div>
             ) : (
               <div className="d-flex gap-2">
                 <Button
                   size="large"
                   onClick={() => {
-                    save();
+                    save("Resubmitted");
                   }}
                 >
-                  Submit
+                  Resubmit
                 </Button>
                 <Button
                   size="large"

@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 import httpRequest from "../../services/httpRequestService";
-import { useLocalState } from "../../utils/useLocalState";
+import { useUser } from "../user-context/UserContext";
 
 function PrivateRoute({ children }) {
-  const [jwt] = useLocalState("", "jwt");
+  const user = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const [isValid, setIsValid] = useState();
 
-  if (jwt) {
+  if (user.jwt) {
     httpRequest(
-      `http://localhost:8081/auth/validate?token=${jwt}`,
+      `http://localhost:8081/auth/validate?token=${user.jwt}`,
       "GET",
-      jwt
+      user.jwt
     ).then((res) => {
       console.log(res);
       console.log("is valid: " + res);
