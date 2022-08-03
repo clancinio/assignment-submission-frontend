@@ -2,7 +2,6 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import { useNavigate } from "react-router";
-import { useLocalState } from "../../utils/useLocalState";
 import { useUser } from "../user-context/UserContext";
 
 function NavBar() {

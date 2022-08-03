@@ -9,9 +9,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import { useParams } from "react-router-dom";
 import httpRequest from "../../services/httpRequestService";
-import { useLocalState } from "../../utils/useLocalState";
 import StatusBadge from "../statusbadge/StatusBadge";
 import { useUser } from "../user-context/UserContext";
+import CommentSection from "../comment-section/CommentSection";
 
 function AssignmentView() {
   const user = useUser();
@@ -238,6 +238,7 @@ function AssignmentView() {
               </div>
             )}
           </>
+          <CommentSection assignmentId={assignmentId} />
         </>
       ) : (
         <div>Loading</div>
